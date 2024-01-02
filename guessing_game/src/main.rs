@@ -1,16 +1,38 @@
 use std::io;
+use std::cmp::Ordering;
+use rand::Rng;
+
 
 fn main() {
 	println!("Guess the number");
+
+	let secret_number = rand::thread_rng().gen_range(1..=100);
+	println!("The secret number is: {secret_number}");
 	
-	println!("Please enter your guess: ");
+	loop {
+		println!("Please enter your guess: ");
 
-	let mut guess = String::new();
+		let mut guess = String::new();
 
-	io::stdin()
-		.read_line(&mut guess)
-		.expect("Failed to read line");
+		io::stdin()
+			.read_line(&mut guess)
+			.expect("Failed to read line");
 
-	println!("You guessed: {guess}");
+		let guess: u32 = match guess.trim().parse() {
+			Ok(num) => num,  // if the value of `guess` is a number it's all good
+			Err(_) => continue,  // if it isn't, then instead of crashing, just continue
+		};	//typecasting ?? wtf ??
+
+		println!("You guessed: {guess}");
+
+		match guess.cmp(&secret_number)	{
+			Ordering::Greater => println!("Too Big !"),
+			Ordering::Less => println!("Too Small !"),
+			Ordering::Equal => {
+								println!("You Win !");
+								break;
+								},
+		}	
+	}
 
 }
